@@ -1,0 +1,178 @@
+/* General Reset & Body */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: #e0f7fa;
+    color: #003366;
+  }
+  
+  header {
+    background: #0077b6;
+    padding: 20px;
+    text-align: center;
+    color: white;
+  }
+  
+  header h1 {
+    margin: 0;
+    font-size: 2.5rem;
+  }
+  
+  header p {
+    font-size: 1rem;
+    margin-top: 5px;
+    color: #caf0f8;
+  }
+  
+  nav {
+    margin-top: 10px;
+  }
+  
+  nav a {
+    margin: 0 10px;
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  
+  nav a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Button */
+  .btn {
+    background-color: #00b4d8;
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 1rem;
+    margin-top: 20px;
+    display: inline-block;
+  }
+  
+  .btn:hover {
+    background-color: #0077b6;
+  }
+  
+  /* Center box for landing and login */
+  .center-box, .form-box {
+    width: 300px;
+    margin: 80px auto;
+    padding: 30px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  form input {
+    width: 100%;
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid #90e0ef;
+    border-radius: 6px;
+  }
+  
+  /* Features Section */
+  .features {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 40px;
+  }
+  
+  .feature-card {
+    background: #90e0ef;
+    color: #03045e;
+    margin: 15px;
+    padding: 25px;
+    border-radius: 15px;
+    width: 260px;
+    box-shadow: 0 8px 12px rgba(0,0,0,0.1);
+    transition: 0.3s ease;
+  }
+  
+  .feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 18px rgba(0,0,0,0.2);
+  }
+  
+  .feature-card h3 {
+    margin-bottom: 10px;
+  }
+  
+  .site-header {
+    background-color: #e0f7fa;
+    padding: 10px 20px;
+    border-bottom: 2px solid #81d4fa;
+  }
+  
+  body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f0f8ff;
+    color: #333;
+    margin: 0;
+    padding: 0;
+  }
+  
+  header {
+    background-color: #0099cc;
+    padding: 20px;
+    text-align: center;
+  }
+  
+  header h1, header p {
+    color: white;
+    margin: 5px 0;
+  }
+  
+  nav a {
+    margin: 0 10px;
+    color: white;
+    text-decoration: none;
+  }
+  
+  nav a:hover {
+    text-decoration: underline;
+  }
+  
+  .feature-page {
+    padding: 30px;
+    max-width: 700px;
+    margin: auto;
+    background-color: #e6f7ff;
+    border-radius: 10px;
+    margin-top: 30px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  }
+  
+  .feature-page h2 {
+    color: #0099cc;
+  }
+  
+  .feature-page ul {
+    list-style: disc;
+    padding-left: 20px;
+  }
+  
+  .feature-page button {
+    background-color: #0099cc;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 20px;
+  }
+  
+  .feature-page button:hover {
+    background-color: #0077aa;
+  }
+  @media (max-width: 768px) {
+    .container {
+      flex-direction: column;
+    }
+  }
+  

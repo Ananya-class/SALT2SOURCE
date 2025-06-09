@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Grey Water Recycling - Salt2Source</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .usage-tracker, .recycling-tips, .savings-calculator {
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      margin-top: 30px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.1);
+    }
+    .water-meter {
+      width: 200px;
+      height: 200px;
+      margin: 20px auto;
+      position: relative;
+      border-radius: 50%;
+      background: conic-gradient(#4CAF50 0%, #2196F3 100%);
+    }
+    .meter-center {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 150px;
+      height: 150px;
+      background: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: bold;
+    }
+    .usage-form input {
+      padding: 8px;
+      margin: 5px 0;
+      width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    .tip-card {
+      background: #f5f5f5;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border-left: 4px solid #4CAF50;
+    }
+    .savings-chart {
+      height: 200px;
+      background: #f5f5f5;
+      margin: 20px 0;
+      border-radius: 8px;
+      overflow: hidden;
+      position: relative;
+    }
+    .chart-bar {
+      position: absolute;
+      bottom: 0;
+      width: 40%;
+      background: #2196F3;
+      transition: height 0.5s ease;
+    }
+    .chart-bar.recycled {
+      left: 10%;
+    }
+    .chart-bar.saved {
+      right: 10%;
+      background: #4CAF50;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1><a href="index.html"><img src="logo.png" alt="Logo" style="width: 40px;"> Salt2Source</a></h1>
+    <p class="project-description">Low Cost Desalination Methods for Remote Coastal Communities</p>
+    <nav>
+      <a href="index.html">Home</a> |
+      <a href="login.html">Login</a> |
+      <a href="signup.html">Signup</a>
+    </nav>
+  </header>
+
+  <main class="feature-page">
+    <h2>♻️ Grey Water Recycling</h2>
+    <p>Track your water usage and learn how to recycle grey water effectively.</p>
+
+    <section class="usage-tracker">
+      <h3>📊 Water Usage Tracker</h3>
+      <div class="water-meter">
+        <div class="meter-center">
+          <span id="usageDisplay">0L</span>
+        </div>
+      </div>
+      <div class="usage-form">
+        <h4>Log Daily Usage</h4>
+        <div>
+          <label>Shower (minutes):</label>
+          <input type="number" id="shower" placeholder="e.g. 10" />
+        </div>
+        <div>
+          <label>Laundry (loads):</label>
+          <input type="number" id="laundry" placeholder="e.g. 1" />
+        </div>
+        <div>
+          <label>Dishwashing (minutes):</label>
+          <input type="number" id="dishes" placeholder="e.g. 15" />
+        </div>
+        <button onclick="calculateUsage()" class="btn">Calculate Usage</button>
+      </div>
+    </section>
+
+    <section class="recycling-tips">
+      <h3>💡 Smart Recycling Tips</h3>
+      <div id="tipsList">
+        <div class="tip-card">
+          <h4>Laundry to Garden</h4>
+          <p>Use washing machine water for garden irrigation by connecting a diversion hose.</p>
+          <button onclick="toggleImplemented(this)" class="btn">Mark as Implemented</button>
+        </div>
+        <div class="tip-card">
+          <h4>Shower to Toilet</h4>
+          <p>Collect shower warm-up water in a bucket to use for toilet flushing.</p>
+          <button onclick="toggleImplemented(this)" class="btn">Mark as Implemented</button>
+        </div>
+        <div class="tip-card">
+          <h4>Sink to Plants</h4>
+          <p>Place a basin in your sink to collect hand-washing water for indoor plants.</p>
+          <button onclick="toggleImplemented(this)" class="btn">Mark as Implemented</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="savings-calculator">
+      <h3>💧 Water Savings Visualizer</h3>
+      <div class="savings-chart">
+        <div class="chart-bar recycled" id="recycledBar"></div>
+        <div class="chart-bar saved" id="savedBar"></div>
+      </div>
+      <div style="display: flex; justify-content: space-around; text-align: center;">
+        <div>
+          <p>Recycled Water</p>
+          <p id="recycledAmount">0L</p>
+        </div>
+        <div>
+          <p>Water Saved</p>
+          <p id="savedAmount">0L</p>
+        </div>
+      </div>
+    </section>
+
+    <button onclick="window.location.href='home.html'" style="margin-top: 30px;">← Back to Features</button>
+  </main>
+
+  <script>
+    function calculateUsage() {
+      const shower = (parseFloat(document.getElementById('shower').value) || 0) * 10;
+      const laundry = (parseFloat(document.getElementById('laundry').value) || 0) * 50;
+      const dishes = (parseFloat(document.getElementById('dishes').value) || 0) * 6;
+
+      const totalUsage = shower + laundry + dishes;
+      document.getElementById('usageDisplay').textContent = totalUsage + 'L';
+
+      // Update savings visualization
+      const recycled = totalUsage * 0.7; // Assume 70% can be recycled
+      const saved = recycled * 0.8; // Assume 80% efficiency in recycling
+
+      document.getElementById('recycledAmount').textContent = recycled.toFixed(1) + 'L';
+      document.getElementById('savedAmount').textContent = saved.toFixed(1) + 'L';
+
+      document.getElementById('recycledBar').style.height = (recycled / totalUsage * 100) + '%';
+      document.getElementById('savedBar').style.height = (saved / totalUsage * 100) + '%';
+    }
+
+    function toggleImplemented(button) {
+      button.classList.toggle('implemented');
+      if (button.classList.contains('implemented')) {
+        button.textContent = 'Implemented ✓';
+        button.style.backgroundColor = '#4CAF50';
+      } else {
+        button.textContent = 'Mark as Implemented';
+        button.style.backgroundColor = '';
+      }
+    }
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+</body>
+</html>

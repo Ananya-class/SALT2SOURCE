@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nearby Water Sources - Salt2Source</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <style>
+        #map {
+            height: 500px;
+            width: 100%;
+            margin: 20px 0;
+            border-radius: 10px;
+        }
+        .source-form {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .source-form input, .source-form textarea {
+            width: 100%;
+            padding: 8px;
+            margin: 8px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .source-list {
+            margin-top: 20px;
+        }
+        .source-item {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1><a href="index.html"><img src="logo.png" alt="Logo" style="width: 40px;"> Salt2Source</a></h1>
+        <p class="project-description">Low Cost Desalination Methods for Remote Coastal Communities</p>
+        <nav>
+            <a href="index.html">Home</a> |
+            <a href="login.html">Login</a> |
+            <a href="signup.html">Signup</a>
+        </nav>
+    </header>
+
+    <main class="feature-page">
+        <h2>🗺️ Nearby Water Sources</h2>
+        <div id="map"></div>
+
+        <div class="source-form">
+            <h3>Add New Water Source</h3>
+            <form id="sourceForm">
+                <input type="text" id="name" placeholder="Location Name" required>
+                <select id="type" required>
+                    <option value="">Select Source Type</option>
+                    <option value="well">Well</option>
+                    <option value="pond">Pond</option>
+                    <option value="river">River</option>
+                    <option value="lake">Lake</option>
+                    <option value="other">Other</option>
+                </select>
+                <textarea id="description" placeholder="Description" rows="3"></textarea>
+                <input type="hidden" id="latitude">
+                <input type="hidden" id="longitude">
+                <button type="submit" class="btn">Add Source</button>
+            </form>
+        </div>
+
+        <div class="source-list" id="sourceList">
+            <h3>Recent Sources</h3>
+            <!-- Sources will be loaded here -->
+        </div>
+    </main>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script>
+        let map;
+        let markers = [];
+
+        function initMap() {
+            // Center on Agnampudi to Kurmanpalem area
+            const center = [17.6868, 83.2185];
+            map = L.map('map').setView(center, 12);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+
+            // Load existing water sources
+            loadSources();
+
+            // Add click listener for new markers
+            map.on('click', (event) => {
+                document.getElementById('latitude').value = event.latlng.lat;
+                document.getElementById('longitude').value = event.latlng.lng;
+                // Add temporary marker
+                markers.forEach(marker => map.removeLayer(marker));
+                markers = [L.marker(event.latlng).addTo(map)];
+            });
+        }
+
+        async function loadSources() {
+            try {
+                const response = await fetch('/api/water-sources');
+                const data = await response.json();
+                const sourceList = document.getElementById('sourceList');
+                sourceList.innerHTML = '<h3>Recent Sources</h3>';
+
+                data.forEach(source => {
+                    addMarker(source);
+                    sourceList.innerHTML += `
+                        <div class="source-item">
+                            <h4>${source.name}</h4>
+                            <p><strong>Type:</strong> ${source.type}</p>
+                            <p>${source.description}</p>
+                        </div>
+                    `;
+                });
+            } catch (error) {
+                console.error('Error loading sources:', error);
+            }
+        }
+
+        function addMarker(source) {
+            const marker = L.marker([source.latitude, source.longitude])
+                .addTo(map)
+                .bindPopup(`
+                    <h3>${source.name}</h3>
+                    <p><strong>Type:</strong> ${source.type}</p>
+                    <p>${source.description}</p>
+                `);
+            markers.push(marker);
+        }
+
+        document.getElementById('sourceForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = {
+                name: document.getElementById('name').value,
+                type: document.getElementById('type').value,
+                description: document.getElementById('description').value,
+                latitude: parseFloat(document.getElementById('latitude').value),
+                longitude: parseFloat(document.getElementById('longitude').value)
+            };
+
+            try {
+                const response = await fetch('/api/water-sources', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (response.ok) {
+                    document.getElementById('sourceForm').reset();
+                    loadSources();
+                }
+            } catch (error) {
+                console.error('Error adding source:', error);
+            }
+        });
+
+        // Initialize map when page loads
+        document.addEventListener('DOMContentLoaded', initMap);
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+</body>
+</html>

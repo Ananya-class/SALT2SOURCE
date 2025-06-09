@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Community Tips - Salt2Source</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        .tip-card {
+            background: white;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .tip-stats {
+            display: flex;
+            gap: 15px;
+            color: #666;
+            font-size: 0.9em;
+        }
+        .vote-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2em;
+        }
+        .tip-form {
+            background: #f0f9ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .tip-form textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        .category-tags {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 10px 0;
+        }
+        .category-tag {
+            background: #e0f7fa;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1><a href="index.html"><img src="logo.png" alt="Logo" style="width: 40px;"> Salt2Source</a></h1>
+        <p class="project-description">Low Cost Desalination Methods for Remote Coastal Communities</p>
+        <nav>
+            <a href="index.html">Home</a> |
+            <a href="login.html">Login</a> |
+            <a href="signup.html">Signup</a>
+        </nav>
+    </header>
+
+    <main class="feature-page">
+        <h2>👨‍👩‍👧‍👦 Community Tips</h2>
+        
+        <!-- Tip Submission Form -->
+        <div class="tip-form">
+            <h3>Share Your Tip</h3>
+            <textarea id="tipContent" placeholder="Share your water conservation tip or experience..." rows="4"></textarea>
+            <div class="category-tags">
+                <span class="category-tag" onclick="selectCategory(this)">Conservation</span>
+                <span class="category-tag" onclick="selectCategory(this)">Maintenance</span>
+                <span class="category-tag" onclick="selectCategory(this)">DIY Solutions</span>
+                <span class="category-tag" onclick="selectCategory(this)">Cost Saving</span>
+            </div>
+            <button class="btn" onclick="submitTip()">Share Tip</button>
+        </div>
+
+        <!-- Tips Display Section -->
+        <div id="tipsContainer">
+            <!-- Sample Tips -->
+            <div class="tip-card">
+                <p><strong>Maria from Coastal Village</strong></p>
+                <p>We collect morning dew using large mesh nets - it provides about 2 liters of fresh water daily!</p>
+                <div class="tip-stats">
+                    <span class="category-tag">DIY Solutions</span>
+                    <button class="vote-btn" onclick="voteTip(0, 'up')">👍 24</button>
+                    <button class="vote-btn" onclick="voteTip(0, 'down')">👎 3</button>
+                    <span>Posted 2 days ago</span>
+                </div>
+            </div>
+
+            <div class="tip-card">
+                <p><strong>Local Fisherman John</strong></p>
+                <p>Maintain your solar still by cleaning the glass surface every morning - this improves efficiency by 30%!</p>
+                <div class="tip-stats">
+                    <span class="category-tag">Maintenance</span>
+                    <button class="vote-btn" onclick="voteTip(1, 'up')">👍 18</button>
+                    <button class="vote-btn" onclick="voteTip(1, 'down')">👎 1</button>
+                    <span>Posted 5 days ago</span>
+                </div>
+            </div>
+        </div>
+
+        <button onclick="window.location.href='home.html'" class="btn" style="margin-top: 20px;">← Back to Features</button>
+    </main>
+
+    <script>
+        function selectCategory(element) {
+            document.querySelectorAll('.category-tag').forEach(tag => tag.style.background = '#e0f7fa');
+            element.style.background = '#00b4d8';
+        }
+
+        function submitTip() {
+            const tipContent = document.getElementById('tipContent').value;
+            if (!tipContent.trim()) {
+                alert('Please enter your tip!');
+                return;
+            }
+
+            const newTip = document.createElement('div');
+            newTip.className = 'tip-card';
+            newTip.innerHTML = `
+                <p><strong>Community Member</strong></p>
+                <p>${tipContent}</p>
+                <div class="tip-stats">
+                    <span class="category-tag">New Tip</span>
+                    <button class="vote-btn" onclick="voteTip(this, 'up')">👍 0</button>
+                    <button class="vote-btn" onclick="voteTip(this, 'down')">👎 0</button>
+                    <span>Just now</span>
+                </div>
+            `;
+
+            document.getElementById('tipsContainer').insertBefore(newTip, document.getElementById('tipsContainer').firstChild);
+            document.getElementById('tipContent').value = '';
+        }
+
+        function voteTip(index, type) {
+            const voteButtons = document.querySelectorAll('.tip-card')[index].querySelectorAll('.vote-btn');
+            const currentVotes = parseInt(voteButtons[type === 'up' ? 0 : 1].textContent.split(' ')[1]);
+            voteButtons[type === 'up' ? 0 : 1].textContent = `${type === 'up' ? '👍' : '👎'} ${currentVotes + 1}`;
+        }
+        async function submitTip() {
+    const tipContent = document.getElementById('tipContent').value;
+    const selectedCategory = document.querySelector('.category-tag[style*="background: rgb(0, 180, 216)"]');
+    
+    if (!tipContent || !selectedCategory) {
+        alert('Please enter your tip and select a category!');
+        return;
+    }
+
+    try {
+        const response = await fetch('/api/tips', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                content: tipContent,
+                category: selectedCategory.textContent
+            })
+        });
+
+        if (response.ok) {
+            loadTips();
+            document.getElementById('tipContent').value = '';
+        } else {
+            const data = await response.json();
+            alert(data.error || 'Failed to submit tip');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+async function loadTips() {
+    try {
+        const response = await fetch('/api/tips');
+        const tips = await response.json();
+        
+        const tipsContainer = document.getElementById('tipsContainer');
+        tipsContainer.innerHTML = tips.map(tip => `
+            <div class="tip-card">
+                <p><strong>${tip.username}</strong></p>
+                <p>${tip.content}</p>
+                <div class="tip-stats">
+                    <span class="category-tag">${tip.category}</span>
+                    <button class="vote-btn" onclick="voteTip(${tip.id}, 'up')">👍 ${tip.upvotes}</button>
+                    <button class="vote-btn" onclick="voteTip(${tip.id}, 'down')">👎 ${tip.downvotes}</button>
+                    <span>Posted ${new Date(tip.created_at).toLocaleDateString()}</span>
+                </div>
+            </div>
+        `).join('');
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+async function voteTip(tipId, voteType) {
+    try {
+        const response = await fetch(`/api/tips/${tipId}/vote`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ vote_type: voteType })
+        });
+
+        if (response.ok) {
+            loadTips();
+        } else {
+            const data = await response.json();
+            alert(data.error || 'Failed to vote');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+// Load tips when page loads
+document.addEventListener('DOMContentLoaded', loadTips);
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    
+</body>
+</html>

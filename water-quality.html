@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Water Quality Checker - Salt2Source</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .quality-test, .results-panel, .history-log {
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      margin-top: 30px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.1);
+    }
+    .parameter-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin: 20px 0;
+    }
+    .parameter-card {
+      background: #f5f5f5;
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+    }
+    .parameter-input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 2px solid #ddd;
+      border-radius: 6px;
+      transition: border-color 0.3s;
+    }
+    .parameter-input:focus {
+      border-color: #4CAF50;
+      outline: none;
+    }
+    .quality-indicator {
+      width: 100px;
+      height: 100px;
+      margin: 20px auto;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: white;
+      position: relative;
+    }
+    .history-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px;
+      margin: 5px 0;
+      background: #f5f5f5;
+      border-radius: 6px;
+      transition: transform 0.2s;
+    }
+    .history-item:hover {
+      transform: translateX(5px);
+    }
+    .parameter-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 5px;
+    }
+    .info-tooltip {
+      font-size: 14px;
+      color: #666;
+      cursor: help;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1><a href="index.html"><img src="logo.png" alt="Logo" style="width: 40px;"> Salt2Source</a></h1>
+    <p class="project-description">Low Cost Desalination Methods for Remote Coastal Communities</p>
+    <nav>
+      <a href="index.html">Home</a> |
+      <a href="login.html">Login</a> |
+      <a href="signup.html">Signup</a>
+    </nav>
+  </header>
+
+  <main class="feature-page">
+    <h2>🧪 Water Quality Checker</h2>
+    <p>Test your water quality with our interactive tool and track changes over time.</p>
+
+    <section class="quality-test">
+      <h3>📊 Quality Parameters</h3>
+      <div class="parameter-grid">
+        <div class="parameter-card">
+          <div class="parameter-label">
+            <label for="ph">pH Level</label>
+            <span class="info-tooltip" title="Safe range: 6.5-8.5">ℹ️</span>
+          </div>
+          <input type="range" id="ph" class="parameter-input" min="0" max="14" step="0.1" value="7"
+            oninput="updateParameter('ph', this.value)" />
+          <span id="phValue">7.0</span>
+        </div>
+
+        <div class="parameter-card">
+          <div class="parameter-label">
+            <label for="tds">TDS (ppm)</label>
+            <span class="info-tooltip" title="Safe range: 0-1000 ppm">ℹ️</span>
+          </div>
+          <input type="number" id="tds" class="parameter-input" min="0" max="2000" value="0"
+            oninput="updateParameter('tds', this.value)" />
+        </div>
+
+        <div class="parameter-card">
+          <div class="parameter-label">
+            <label for="turbidity">Turbidity (NTU)</label>
+            <span class="info-tooltip" title="Safe range: 0-5 NTU">ℹ️</span>
+          </div>
+          <input type="number" id="turbidity" class="parameter-input" min="0" max="20" step="0.1" value="0"
+            oninput="updateParameter('turbidity', this.value)" />
+        </div>
+
+        <div class="parameter-card">
+          <div class="parameter-label">
+            <label for="chlorine">Chlorine (mg/L)</label>
+            <span class="info-tooltip" title="Safe range: 0.2-2.0 mg/L">ℹ️</span>
+          </div>
+          <input type="number" id="chlorine" class="parameter-input" min="0" max="5" step="0.1" value="0"
+            oninput="updateParameter('chlorine', this.value)" />
+        </div>
+      </div>
+      <button onclick="analyzeWater()" class="btn">Analyze Water Quality</button>
+    </section>
+
+    <section class="results-panel">
+      <h3>📈 Analysis Results</h3>
+      <div class="quality-indicator" id="qualityIndicator"></div>
+      <div id="recommendations" style="text-align: center; margin-top: 20px;"></div>
+    </section>
+
+    <section class="history-log">
+      <h3>📝 Testing History</h3>
+      <div id="historyList"></div>
+    </section>
+
+    <button onclick="window.location.href='home.html'" style="margin-top: 30px;">← Back to Features</button>
+  </main>
+
+  <script>
+    function updateParameter(param, value) {
+      if (param === 'ph') {
+        document.getElementById('phValue').textContent = parseFloat(value).toFixed(1);
+      }
+    }
+
+    function analyzeWater() {
+      const ph = parseFloat(document.getElementById('ph').value);
+      const tds = parseFloat(document.getElementById('tds').value);
+      const turbidity = parseFloat(document.getElementById('turbidity').value);
+      const chlorine = parseFloat(document.getElementById('chlorine').value);
+
+      let score = 100;
+      let issues = [];
+
+      // pH analysis
+      if (ph < 6.5 || ph > 8.5) {
+        score -= 25;
+        issues.push('pH level is outside safe range (6.5-8.5)');
+      }
+
+      // TDS analysis
+      if (tds > 1000) {
+        score -= 25;
+        issues.push('TDS is too high (should be below 1000 ppm)');
+      }
+
+      // Turbidity analysis
+      if (turbidity > 5) {
+        score -= 25;
+        issues.push('Turbidity is too high (should be below 5 NTU)');
+      }
+
+      // Chlorine analysis
+      if (chlorine < 0.2 || chlorine > 2.0) {
+        score -= 25;
+        issues.push('Chlorine level is outside safe range (0.2-2.0 mg/L)');
+      }
+
+      // Update quality indicator
+      const indicator = document.getElementById('qualityIndicator');
+      indicator.style.background = score > 75 ? '#4CAF50' : score > 50 ? '#FFA500' : '#FF4444';
+      indicator.textContent = `${score}%`;
+
+      // Update recommendations
+      const recommendations = document.getElementById('recommendations');
+      if (issues.length > 0) {
+        recommendations.innerHTML = `<h4>Issues Found:</h4><ul style="list-style: none; padding: 0;">${issues.map(issue => 
+          `<li style="margin: 5px 0;">⚠️ ${issue}</li>`).join('')}</ul>`;
+      } else {
+        recommendations.innerHTML = '<h4>✅ Water quality is within safe parameters!</h4>';
+      }
+
+      // Add to history
+      addToHistory({
+        date: new Date().toLocaleString(),
+        score: score,
+        ph: ph,
+        tds: tds,
+        turbidity: turbidity,
+        chlorine: chlorine
+      });
+    }
+
+    function addToHistory(test) {
+      const historyList = document.getElementById('historyList');
+      const historyItem = document.createElement('div');
+      historyItem.className = 'history-item';
+      historyItem.innerHTML = `
+        <div>
+          <strong>${test.date}</strong>
+          <br>
+          pH: ${test.ph.toFixed(1)} | TDS: ${test.tds} ppm | Turbidity: ${test.turbidity} NTU | Chlorine: ${test.chlorine} mg/L
+        </div>
+        <div style="color: ${test.score > 75 ? '#4CAF50' : test.score > 50 ? '#FFA500' : '#FF4444'}">
+          ${test.score}%
+        </div>
+      `;
+      historyList.insertBefore(historyItem, historyList.firstChild);
+    }
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+</body>
+</html>

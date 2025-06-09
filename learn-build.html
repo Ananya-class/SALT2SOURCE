@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Learn & Build - Salt2Source</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        .project-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .progress-bar {
+            background: #e0f7fa;
+            height: 20px;
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            background: #00b4d8;
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+        .step-list {
+            list-style: none;
+            padding: 0;
+        }
+        .step-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            margin: 5px 0;
+            background: #f8f9fa;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .step-item.completed {
+            background: #e0f7fa;
+        }
+        .materials-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .material-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .difficulty {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.9em;
+            margin: 5px 0;
+        }
+        .easy { background: #c8e6c9; }
+        .medium { background: #fff3e0; }
+        .hard { background: #ffcdd2; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1><a href="index.html"><img src="logo.png" alt="Logo" style="width: 40px;"> Salt2Source</a></h1>
+        <p class="project-description">Low Cost Desalination Methods for Remote Coastal Communities</p>
+        <nav>
+            <a href="index.html">Home</a> |
+            <a href="login.html">Login</a> |
+            <a href="signup.html">Signup</a>
+        </nav>
+    </header>
+
+    <main class="feature-page">
+        <h2>📘 Learn & Build</h2>
+
+        <!-- Project Selection -->
+        <div class="project-card">
+            <h3>Select Your Project</h3>
+            <select id="projectSelect" onchange="loadProject()" class="btn" style="width: 100%; margin: 10px 0;">
+                <option value="solar">Solar Still (Easy)</option>
+                <option value="wick">Wick System (Medium)</option>
+                <option value="membrane">Membrane Filter (Hard)</option>
+            </select>
+
+            <!-- Project Progress -->
+            <div>
+                <p>Project Progress: <span id="progressText">0%</span></p>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressBar" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Current Project Details -->
+        <div id="projectDetails" class="project-card">
+            <h3>Solar Still Construction</h3>
+            <span class="difficulty easy">Easy - 2-3 hours</span>
+            
+            <img src="solar-diagram.png" alt="Solar Still Diagram" style="max-width: 100%; height: auto; margin: 20px 0;">
+            
+            <h4>Required Materials</h4>
+            <div class="materials-list">
+                <div class="material-card">
+                    <p>Large Glass Sheet</p>
+                    <p>Est. Cost: $5-10</p>
+                    <button class="btn" onclick="toggleMaterial(this)">✓ Have It</button>
+                </div>
+                <div class="material-card">
+                    <p>Black Container</p>
+                    <p>Est. Cost: $2-5</p>
+                    <button class="btn" onclick="toggleMaterial(this)">✓ Have It</button>
+                </div>
+                <div class="material-card">
+                    <p>Silicon Sealant</p>
+                    <p>Est. Cost: $3-6</p>
+                    <button class="btn" onclick="toggleMaterial(this)">✓ Have It</button>
+                </div>
+            </div>
+
+            <h4>Construction Steps</h4>
+            <ul class="step-list" id="stepsList">
+                <li class="step-item" onclick="toggleStep(this)">
+                    <span>1. Clean the glass sheet thoroughly</span>
+                </li>
+                <li class="step-item" onclick="toggleStep(this)">
+                    <span>2. Prepare the black container</span>
+                </li>
+                <li class="step-item" onclick="toggleStep(this)">
+                    <span>3. Apply silicon sealant</span>
+                </li>
+                <li class="step-item" onclick="toggleStep(this)">
+                    <span>4. Test for leaks</span>
+                </li>
+            </ul>
+
+            <button class="btn" onclick="downloadGuide()">Download Guide</button>
+        </div>
+
+        <button onclick="window.location.href='home.html'" class="btn" style="margin-top: 20px;">← Back to Features</button>
+    </main>
+
+    <script>
+        function toggleStep(element) {
+            element.classList.toggle('completed');
+            updateProgress();
+        }
+
+        function toggleMaterial(button) {
+            button.classList.toggle('btn-primary');
+            button.textContent = button.classList.contains('btn-primary') ? '× Need It' : '✓ Have It';
+        }
+
+        function updateProgress() {
+            const steps = document.querySelectorAll('.step-item');
+            const completedSteps = document.querySelectorAll('.step-item.completed');
+            const progress = (completedSteps.length / steps.length) * 100;
+            
+            document.getElementById('progressBar').style.width = `${progress}%`;
+            document.getElementById('progressText').textContent = `${Math.round(progress)}%`;
+        }
+
+        function loadProject() {
+            const project = document.getElementById('projectSelect').value;
+            // Update project details based on selection
+            alert('Loading ' + project + ' project details...');
+        }
+
+        function downloadGuide() {
+            window.open('learn and build guide.pdf', '_blank');
+        }
+
+        // Initialize progress on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            updateProgress();
+        });
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+</body>
+</html>

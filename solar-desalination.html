@@ -1,0 +1,86 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Solar Desalination - Salt2Source</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .steps, .calculator {
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      margin-top: 30px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.1);
+    }
+    .calculator input {
+      padding: 8px;
+      margin: 5px 0;
+      width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1><a href="index.html"><img src="logo.png" alt="Logo" style="width: 40px;"> Salt2Source</a></h1>
+    <p class="project-description">Low Cost Desalination Methods for Remote Coastal Communities</p>
+    <nav>
+      <a href="index.html">Home</a> |
+      <a href="login.html">Login</a> |
+      <a href="signup.html">Signup</a>
+    </nav>
+  </header>
+
+  <main class="feature-page">
+    <h2>🌊 Solar Desalination</h2>
+    <p>Use solar energy to purify salty or unclean water by evaporating and collecting the clean vapor.</p>
+
+    <section class="steps">
+      <h3>🔧 How It Works</h3>
+      <ol>
+        <li>Fill a black container with saltwater.</li>
+        <li>Cover it with a clear plastic or glass sheet at an angle.</li>
+        <li>Sun heats the water → it evaporates and condenses on the cover.</li>
+        <li>Condensed water drips into a clean collection container.</li>
+      </ol>
+    </section>
+
+    <section class="calculator">
+      <h3>💰 DIY Cost Estimator</h3>
+      <label>Container cost ($):</label>
+      <input type="number" id="container" placeholder="e.g. 5" />
+      <label>Glass/Plastic Cover cost ($):</label>
+      <input type="number" id="cover" placeholder="e.g. 3" />
+      <label>Collection Jar cost ($):</label>
+      <input type="number" id="jar" placeholder="e.g. 2" />
+      <label>Misc Materials cost ($):</label>
+      <input type="number" id="misc" placeholder="e.g. 1" />
+      <button onclick="calculateCost()" class="btn">Calculate Total Cost</button>
+      <p id="totalCost" style="margin-top: 10px; font-weight: bold;"></p>
+    </section>
+
+    <div style="text-align: center; margin-top: 30px;">
+      <a class="btn" href="downloads/solar-guide.pdf" download>⬇️ Download DIY Guide (PDF)</a>
+    </div>
+
+    <button onclick="window.location.href='home.html'" style="margin-top: 30px;">← Back to Features</button>
+  </main>
+
+  <script>
+    function calculateCost() {
+      const container = parseFloat(document.getElementById('container').value) || 0;
+      const cover = parseFloat(document.getElementById('cover').value) || 0;
+      const jar = parseFloat(document.getElementById('jar').value) || 0;
+      const misc = parseFloat(document.getElementById('misc').value) || 0;
+
+      const total = container + cover + jar + misc;
+      document.getElementById('totalCost').innerText = `Estimated Cost: $${total.toFixed(2)}`;
+    }
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+</body>
+</html>
